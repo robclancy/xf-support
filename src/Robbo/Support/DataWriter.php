@@ -22,15 +22,15 @@ abstract class DataWriter extends \XenForo_DataWriter {
 		$fields = array();
 		foreach ($this->_dataWriteFields AS $field)
 		{
-			$fields[$field->getName()] = $field->toArray();
+			$fields[$field->getTable()][$field->getName()] = $field->toArray();
 		}
 
 		return $fields;
 	}
 
-	protected function _field($name)
+	protected function _field($name, $table = null)
 	{
-		return new DataWriterField($name);
+		return new DataWriterField($name, $table ? $table : $this->_table);
 	}
 
 	protected function _genericExistingData($table, $key, RepositoryInterface $repository, $data)
@@ -48,5 +48,10 @@ abstract class DataWriter extends \XenForo_DataWriter {
 		// TODO: stuff with table here?
 
 		return $key.' = '.$this->_db->quote($this->getExisting($key));
+	}
+
+	protected function _createRepository(DataModelInterface $model)
+	{
+		return new Repository($model);
 	}
 }

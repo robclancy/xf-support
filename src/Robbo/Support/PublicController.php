@@ -14,20 +14,29 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 	const JSON_ARRAY = 'json_array';
 	const DATE_TIME       = 'dateTime';
 
-	protected $dataModel;
+	protected $_dataModel;
 
-	protected $dataModelName;
+	protected $_dataModelName;
 
-	protected $repository;
+	protected $_repository;
 
-	protected $repositoryName = 'Robbo\Support\Repository';
+	protected $_repositoryName = 'Robbo\Support\Repository';
+
+	protected $_idName;
+
+	protected $_id;
 
 	protected function _preDispatchType($action)
 	{
-		if ( ! is_null($this->dataModelName))
+		if ( ! is_null($this->_dataModelName))
 		{
-			$this->dataModel = $this->getModelFromCache($this->dataModelName);
-			$this->repository = new $this->repositoryName($this->dataModel);
+			$this->_dataModel = $this->getModelFromCache($this->_dataModelName);
+			$this->_repository = new $this->_repositoryName($this->_dataModel);
+		}
+
+		if ( ! is_null($this->_idName))
+		{
+			$this->_id = $this->_input->filterSingle($this->_idName, self::UINT);
 		}
 
 		parent::_preDispatchType($action);

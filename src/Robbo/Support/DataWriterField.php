@@ -4,11 +4,14 @@ class DataWriterField {
 
 	protected $_name;
 
+	protected $_table;
+
 	protected $_definition = array();
 
-	public function __construct($name)
+	public function __construct($name, $table)
 	{
-		$this->name = $name;
+		$this->_name = $name;
+		$this->_table = $table;
 	}
 
 	public function string()
@@ -28,6 +31,11 @@ class DataWriterField {
 	public function getName()
 	{
 		return $this->_name;
+	}
+
+	public function getTable()
+	{
+		return $this->_table;
 	}
 
 	public function toArray()
