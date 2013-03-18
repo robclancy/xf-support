@@ -84,7 +84,6 @@ There is a concrete implementation `Robbo\Support\Repository` however you can ex
 To use the concrete implementation you need to give it a data model to use. Here is an example in a traditional controller using our above data model.
 
 ```php
-
 class MyController extends XenForo_ControllerPublic_Abstract {
 	
 	public function actionIndex()
@@ -137,6 +136,7 @@ Controllers really just have little helpers. For one instead of having to type o
 
 Then there are helpers for creating the repositories and models for you early in the controllers lifespan. So the above controller can be simplified to the following:
 
+```php
 class MyController extends XenForo_ControllerPublic_Abstract {
 	
 	protected $_dataModelName = 'MyModel';
@@ -181,7 +181,6 @@ class MyController extends XenForo_ControllerPublic_Abstract {
 I hate having to write out all that boilerplate for datawriters just like I had to for models. So I added a few little shortcuts to make it less tedious and even easier to read.
 
 ```php
-
 class MyWriter extends \Robbo\Support\DataWriter {
 	
 	/* Old way
