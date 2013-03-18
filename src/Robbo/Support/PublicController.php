@@ -26,7 +26,7 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 
 	protected $_id;
 
-	protected function _preDispatchType($action)
+	protected function _preDispatch($action)
 	{
 		if ( ! is_null($this->_dataModelName))
 		{
