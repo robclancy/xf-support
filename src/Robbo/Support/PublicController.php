@@ -12,7 +12,7 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 	const BINARY     = 'binary';
 	const ARRAY_SIMPLE = 'array_simple';
 	const JSON_ARRAY = 'json_array';
-	const DATE_TIME       = 'dateTime';
+	const DATE_TIME  = 'dateTime';
 
 	protected $_dataModel;
 

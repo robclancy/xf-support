@@ -10,6 +10,57 @@ Coming soon...
 
 Note: a lot of this is still fairly boilerplate and tedious, I will have xf-toolkit generate a lot of code in the future when I get to it.
 
+### Installers
+
+These use forks from illuminate/database to provide a schema builder. 
+
+TODO: more information and link to laravel docs
+
+Here is an example installer...
+```php
+class TestInstaller extends Installer {
+
+	public function up1()
+	{
+		$this->schema->create('photos', function($table)
+		{
+			$table->increments('photo_id');
+
+			$table->string('filename');
+		});
+	}
+
+	public function down1()
+	{
+		$this->schema->drop('photos');
+	}
+
+	public function up2()
+	{
+		$this->schema->create('albums', function($table)
+		{
+			$table->increments('album_id');
+			$table->string('name');
+		});
+
+		$this->schema->table('photos', function($table)
+		{
+			$table->integer('album_id')->unsigned()->after('photo_id');
+		});
+	}
+
+	public function down2()
+	{
+		$this->schema->table('photos', function($table)
+		{
+			$table->dropColumn('album_id');
+		});
+
+		$this->schema->drop('albums');
+	}
+}
+```
+
 ### Data Model
 
 This is designed to have methods which only work with the database. Other model data, for example resizing a thumbnail should be in a traditional model as these models are designed to work with repositories which are detailed below.
