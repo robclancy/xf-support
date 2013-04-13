@@ -33,8 +33,12 @@ abstract class Installer {
 		// XenForo only supports MySQL I think...
 		$config['driver'] = 'mysql';
 
+		$config['database'] = $config['dbname'];
+		$config['collation'] = 'utf8_general_ci';
+		$config['charset'] = 'utf8';
+
 		$pdo = Connector::create($config, true);
-		$this->connection = Connection::create($config['driver'], $pdo, $config['dbname']);
+		$this->connection = Connection::create($config['driver'], $pdo, $config['database']);
 		$this->schema = $this->connection->getSchemaBuilder();
 	}
 
@@ -72,7 +76,7 @@ abstract class Installer {
 	{
 		foreach ($versions AS $i)
 		{
-			if (method_exists(array($this, $method.$i)))
+			if (method_exists($this, $method.$i))
 			{
 				$this->{$method.$i}();
 				$this->upLog[] = $i;
