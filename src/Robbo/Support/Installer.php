@@ -15,14 +15,14 @@ abstract class Installer {
 
 	protected $upLog;
 
-	public static function install(array $existingAddOn, array $addOnData)
+	public static function install($existingData, array $data)
 	{
-		return (new static)->up($existingAddOn, $addOnData);
+		return (new static)->up($existingData, $data);
 	}
 
 	public static function uninstall(array $existingData)
 	{
-		return (new static)->down($existingAddOn);
+		return (new static)->down($existingData);
 	}
 
 	protected function _setUp()
@@ -38,16 +38,17 @@ abstract class Installer {
 		$this->schema = $this->connection->getSchemaBuilder();
 	}
 
-	public function up(array $existingAddOn, array $addOnData)
+	public function up($existingData, array $data)
 	{
-		$this->existingData = $existingAddOn;
-		$this->data = $addOnData;
+		$this->existingData = $existingData;
+		$this->data = $data;
 
 		$this->_setUp();
 
 		try 
 		{
-			$this->_runMethods('up', range($existingAddOn['version_id']+1, $addOnData['version_id']));
+			$existingVersion = $existingData ? $existingData['version_id'] : 0;
+			$this->_runMethods('up', range($existingVersion+1, $data['version_id']));
 		}
 		catch (Exception $e)
 		{
@@ -58,9 +59,9 @@ abstract class Installer {
 		}
 	}
 
-	public function down(array $existingAddOn)
+	public function down(array $existingData)
 	{
-		$this->existingData = $existingAddOn;
+		$this->existingData = $existingData;
 
 		$this->_setUp();
 
