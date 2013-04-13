@@ -1,4 +1,4 @@
-<?php namespace Robbo\XfSupport;
+<?php namespace Robbo\Support;
 
 use Robbo\DbConnector\Connector;
 use Robbo\SchemaBuilder\Connection;
@@ -25,9 +25,9 @@ abstract class Installer {
 		return (new static)->down($existingAddOn);
 	}
 
-	protected function setUp()
+	protected function _setUp()
 	{
-		$config = \XenForo_Application::getConfig();
+		$config = \XenForo_Application::getConfig()->toArray();
 		$config = $config['db'];
 
 		// XenForo only supports MySQL I think...
@@ -43,16 +43,18 @@ abstract class Installer {
 		$this->existingData = $existingAddOn;
 		$this->data = $addOnData;
 
-		$this->setUp();
+		$this->_setUp();
 
-		//try 
+		try 
 		{
 			$this->_runMethods('up', range($existingAddOn['version_id']+1, $addOnData['version_id']));
 		}
-		//catch (Something $e)
+		catch (Exception $e)
 		{
 			// Run down on everything we just did up on
-			//$this->_runMethods('_down', $this->upLog);
+			$this->_runMethods('_down', $this->upLog);
+
+			throw $e;
 		}
 	}
 
@@ -60,7 +62,7 @@ abstract class Installer {
 	{
 		$this->existingData = $existingAddOn;
 
-		$this->setUp();
+		$this->_setUp();
 
 		$this->_runMethods('down', range($from, 0));
 	}
