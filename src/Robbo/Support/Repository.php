@@ -19,7 +19,7 @@ class Repository implements RepositoryInterface {
 		return $this->model->getAllResources($fetchOptions);
 	}
 
-	public function getSome(array $conditions = array(), array $fetchOptions = array())
+	public function get(array $conditions = array(), array $fetchOptions = array())
 	{
 		return $this->model->getResources($conditions, $fetchOptions);
 	}
