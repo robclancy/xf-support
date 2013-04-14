@@ -39,6 +39,6 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 			$this->_id = $this->_input->filterSingle($this->_idName, self::UINT);
 		}
 
-		parent::_preDispatchType($action);
+		parent::_preDispatch($action);
 	}
 }
