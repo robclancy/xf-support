@@ -30,7 +30,7 @@ abstract class DataWriter extends \XenForo_DataWriter {
 
 	protected function _field($name, $table = null)
 	{
-		return new DataWriterField($name, $table ? $table : $this->_table);
+		return $this->_dataWriteFields[$table.$name] = new DataWriterField($name, $table ? $table : $this->_table);
 	}
 
 	protected function _genericExistingData($table, $key, RepositoryInterface $repository, $data)

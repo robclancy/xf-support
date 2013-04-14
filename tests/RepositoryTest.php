@@ -18,7 +18,7 @@ class RepositoryTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('test2'), $repository->getAll());
 
 		$model->shouldReceive('getResources')->once()->with(array('test' => 2), array())->andReturn(array('sommme'));
-		$this->assertEquals(array('sommme'), $repository->getSome(array('test' => 2)));
+		$this->assertEquals(array('sommme'), $repository->get(array('test' => 2)));
 
 		$model->shouldReceive('insert')->once()->with(array('name' => 'test'))->andReturn(array('id' => 1, 'name' => 'test'));
 		$this->assertEquals(array('id' => 1, 'name' => 'test'), $repository->insert(array('name' => 'test')));
