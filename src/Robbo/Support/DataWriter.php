@@ -4,13 +4,21 @@ abstract class DataWriter extends \XenForo_DataWriter {
 
 	protected $_dataWriteFields = array();
 
-	protected $_key;
+	protected static $_key;
 
-	protected $_table;
-
-	protected $_model;
+	protected static $_table;
 
 	abstract protected function _setFields();
+
+	public static function getKey()
+	{
+		return static::$_key;
+	}
+
+	public static function getTable()
+	{
+		return static::$_table;
+	}
 
 	protected function _getFields()
 	{
@@ -33,25 +41,22 @@ abstract class DataWriter extends \XenForo_DataWriter {
 		return $this->_dataWriteFields[$table.$name] = new DataWriterField($name, $table ? $table : $this->_table);
 	}
 
-	protected function _genericExistingData($table, $key, RepositoryInterface $repository, $data)
-	{
-		if ( ! $id = $this->_getExistingPrimaryKey($data, $key))
-		{
-			return false;
-		}
+	abstract protected function _getDataModelName();
 
-		return array($table => $repository->getById($id));
-	}
+	protected function _getExistingData($data)
+    {
+    	if ( ! $id = $this->_getExistingPrimaryKey($data, static::$_key))
+    	{
+    		return false;
+    	}
 
-	protected function _genericUpdateCondition($table, $key)
-	{
-		// TODO: stuff with table here?
+    	return array(static::$_table => $this->getModelFromCache($this->_getDataModelName())->getById($id));
+    }
 
-		return $key.' = '.$this->_db->quote($this->getExisting($key));
-	}
+    protected function _getUpdateCondition($tableName)
+    {
+    	// TODO: stuff with table here?
 
-	protected function _createRepository(DataModelInterface $model)
-	{
-		return new Repository($model);
-	}
+    	return static::$_key.' = '.$this->_db->quote($this->getExisting(static::$_key));
+    }
 }

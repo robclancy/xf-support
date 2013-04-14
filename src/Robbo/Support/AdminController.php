@@ -16,13 +16,7 @@ abstract class AdminController extends \XenForo_ControllerAdmin_Abstract {
 
 	protected $_dataModel;
 
-	protected $_dataModelName;
-
 	protected $_repository;
-
-	protected $_repositoryName = 'Robbo\Support\Repository';
-
-	protected $_idName;
 
 	protected $_id;
 
@@ -37,15 +31,20 @@ abstract class AdminController extends \XenForo_ControllerAdmin_Abstract {
 
 		if ( ! is_null($this->_dataModelName))
 		{
-			$this->_dataModel = $this->getModelFromCache($this->_dataModelName);
-			$this->_repository = new $this->_repositoryName($this->_dataModel);
-		}
-
-		if ( ! is_null($this->_idName))
-		{
-			$this->_id = $this->_input->filterSingle($this->_idName, self::UINT);
+			$this->_dataModel = $this->getModelFromCache($this->_getDataModelName());
+			$repoName = $this->_getRepositoryName();
+			$this->_repository = new $repoName($this->_dataModel);
+		
+			$this->_id = $this->_input->filterSingle($this->_dataModel->getKey(), self::UINT);
 		}
 
 		parent::_preDispatch($action);
+	}
+
+	abstract protected function _getDataModelName();
+
+	protected function _getRepositoryName()
+	{
+		return 'Robbo\Support\Repository';
 	}
 }

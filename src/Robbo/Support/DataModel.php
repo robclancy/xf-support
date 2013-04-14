@@ -2,24 +2,42 @@
 
 abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
-	protected $_table;
-
-	protected $_key;
-
-	protected $_dataWriterName;
-
 	protected $_defaultOrder = '';
 
 	public function __construct()
 	{
 		// Populate $this->_db so we can just use that instead
 		$this->_getDb();
+
+		$this->_setTableAndKey();
+	}
+
+	protected function _setTableAndKey()
+	{
+		$writer = $this->_getWriterName();
+		$this->_table = $writer::getTable();
+		$this->_key = $writer::getKey();
+	}
+
+	public function getKey()
+	{
+		return $this->_key;
+	}
+
+	public function getTable()
+	{
+		return $this->_table;
+	}
+
+	abstract protected function _getWriterName();
+
+	public function getNewWriter()
+	{
+		return  \XenForo_DataWriter::create($this->_getWriterName());
 	}
 
 	public function getResourceById($id, array $fetchOptions = array())
 	{
-		$this->_assertTableAndKeySet();
-
 		$joinOptions = $this->prepareResourceFetchOptions($fetchOptions);
 
 		return $this->_db->fetchRow('
@@ -33,8 +51,6 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	public function getResources(array $conditions = array(), array $fetchOptions = array())
 	{
-		$this->_assertTableAndKeySet();
-
 		$whereClause = $this->prepareResourceConditions($conditions, $fetchOptions);
 
 		$orderClause = $this->prepareResourceOrderOptions($fetchOptions, $this->_defaultOrder);
@@ -55,8 +71,6 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	public function getAllResources(array $fetchOptions = array())
 	{
-		$this->_assertTableAndKeySet();
-
 		$joinOptions = $this->prepareResourceFetchOptions($fetchOptions);
 		$orderClause = $this->prepareResourceOrderOptions($fetchOptions, $this->_defaultOrder);
 
@@ -71,7 +85,7 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	public function insert(array $data)
 	{
-		$dw = \XenForo_DataWriter::create($this->_dataWriterName);
+		$dw = $this->getNewWriter();
 
 		$dw->bulkSet($data);
 		$dw->save();
@@ -81,7 +95,7 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	public function update($id, array $data)
 	{
-		$dw = \XenForo_DataWriter::create($this->_dataWriterName);
+		$dw = $this->getNewWriter();
 
 		$dw->setExistingData($id);
 		$dw->bulkSet($data);
@@ -92,7 +106,7 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	public function delete($id)
 	{
-		$dw = \XenForo_DataWriter::create($this->_dataWriterName);
+		$dw = $this->getNewWriter();
 
 		$dw->setExistingData($id);
 		
@@ -112,13 +126,5 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 	public function prepareResourceOrderOptions(array &$fetchOptions, $defaultOrderSql = '')
 	{
 		return $defaultOrderSql;
-	}
-
-	protected function _assertTableAndKeySet()
-	{
-		if (is_null($this->_table) OR is_null($this->_key))
-		{
-			throw new \XenForo_Exception(__CLASS__.'->_table and '.__CLASS__.'->_key must be set in '.__FILE__);
-		}
 	}
 }
