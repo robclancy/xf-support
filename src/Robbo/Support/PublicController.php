@@ -40,7 +40,7 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 		throw new \XenForo_Exception(__METHOD__.' must be overwritten');
 	}
 
-	public function getKey()
+	public static function getKey()
 	{
 		$dataModel = static::_getDataModelName();
 		return $dataModel::getKey();

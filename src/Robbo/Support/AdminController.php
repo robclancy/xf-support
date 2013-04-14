@@ -47,7 +47,7 @@ abstract class AdminController extends \XenForo_ControllerAdmin_Abstract {
 		throw new \XenForo_Exception(__METHOD__.' must be overwritten');
 	}
 
-	public function getKey()
+	public static function getKey()
 	{
 		$dataModel = static::_getDataModelName();
 		return $dataModel::getKey();
