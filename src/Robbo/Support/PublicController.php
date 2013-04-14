@@ -35,7 +35,10 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 		parent::_preDispatch($action);
 	}
 
-	abstract protected static function _getDataModelName();
+	protected static function _getDataModelName()
+	{
+		throw new \XenForo_Exception(__METHOD__.' must be overwritten');
+	}
 
 	public function getKey()
 	{
