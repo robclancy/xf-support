@@ -6,7 +6,7 @@ interface RepositoryInterface {
 
 	public function getAll(array $fetchOptions = array());
 
-	public function getSome(array $conditions = array(), array $fetchOptions = array());
+	public function get(array $conditions = array(), array $fetchOptions = array());
 
 	public function insert(array $data);
 
