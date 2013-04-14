@@ -25,7 +25,7 @@ class DataWriterField {
 
 	public function string()
 	{
-		return $this->_addDefinition('type', DW::TYPE_STRING)
+		return $this->_addDefinition('type', DW::TYPE_STRING);
 	}
 
 	public function uinteger()
