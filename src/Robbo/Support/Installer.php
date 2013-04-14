@@ -5,15 +5,17 @@ use Robbo\SchemaBuilder\Connection;
 
 abstract class Installer {
 
-	protected $schema;
+	protected $_schema;
 
-	protected $connection;
+	protected $_connection;
 
-	protected $data;
+	protected $_data;
 
-	protected $existingData;
+	protected $_existingData;
 
-	protected $upLog;
+	protected $_upLog;
+
+	protected $_db;
 
 	public static function install($existingData, array $data)
 	{
@@ -38,14 +40,16 @@ abstract class Installer {
 		$config['charset'] = 'utf8';
 
 		$pdo = Connector::create($config, true);
-		$this->connection = Connection::create($config['driver'], $pdo, $config['database']);
-		$this->schema = $this->connection->getSchemaBuilder();
+		$this->_connection = Connection::create($config['driver'], $pdo, $config['database']);
+		$this->_schema = $this->_connection->getSchemaBuilder();
+
+		$this->_db = \XenForo_Application::getDb();
 	}
 
 	public function up($existingData, array $data)
 	{
-		$this->existingData = $existingData;
-		$this->data = $data;
+		$this->_existingData = $existingData;
+		$this->_data = $data;
 
 		$this->_setUp();
 
@@ -57,7 +61,7 @@ abstract class Installer {
 		catch (Exception $e)
 		{
 			// Run down on everything we just did up on
-			$this->_runMethods('_down', $this->upLog);
+			$this->_runMethods('_down', $this->_upLog);
 
 			throw $e;
 		}
@@ -65,7 +69,7 @@ abstract class Installer {
 
 	public function down(array $existingData)
 	{
-		$this->existingData = $existingData;
+		$this->_existingData = $existingData;
 
 		$this->_setUp();
 
@@ -79,8 +83,70 @@ abstract class Installer {
 			if (method_exists($this, $method.$i))
 			{
 				$this->{$method.$i}();
-				$this->upLog[] = $i;
+				$this->_upLog[] = $i;
 			}
 		}
+	}
+
+	protected function _insertContentTypes($contentTypes)
+	{
+		$sql = '
+			INSERT IGNORE INTO xf_content_type
+				(content_type, addon_id, fields)
+			VALUES';
+		$logs = array();
+		foreach (array_keys($this->_contentTypes) AS $contentType)
+		{
+			$sql .= "
+				('$contentType', '" . $this->_addonData['addon_id'] . "', ''),";
+			$logs[] = 'content_type = ' . $this->_db->quote($contentType);
+		}
+
+		$this->_db->query(substr($sql, 0, -1));
+
+		$sql = '
+			INSERT IGNORE INTO xf_content_type_field
+				(content_type, field_name, field_value)
+			VALUES';
+		$logs = array();
+		foreach ($contentTypes AS $contentType => $fields)
+		{
+			foreach ($fields AS $name => $value)
+			{
+				$sql .= "
+				('$contentType', '$name', '$value'),";
+			}
+		}
+
+		$this->_db->query(substr($sql, 0, -1));
+
+		$this->_rebuildContentTypesCache();
+	}
+
+	protected function _removeContentTypes(array $contentTypes)
+	{
+		foreach ($contentTypes AS $contentType => $fields)
+		{
+			$this->_db->delete('xf_content_type', '
+				content_type = ' . $this->_db->quote($contentType) . ' AND
+				addon_id = ' . $this->_db->quote($this->_existingAddon['addon_id']) . '
+			');
+
+			foreach ($fields AS $name => $value)
+			{
+				$this->_db->delete('xf_content_type_field', '
+					content_type = ' . $this->_db->quote($contentType) . ' AND
+					field_name = ' . $this->_db->quote($name) . ' AND
+					field_value = ' . $this->_db->quote($value) . '
+				');
+			}
+		}
+
+		$this->_rebuildContentTypesCache();
+	}
+
+	protected function _rebuildContentTypesCache()
+	{
+		\XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 	}
 }
