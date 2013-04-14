@@ -23,6 +23,11 @@ class DataWriterField {
 		return $this;
 	}
 
+	public function setDefault($value)
+	{
+		return $this->_definition('default', $value);
+	}
+
 	public function getName()
 	{
 		return $this->_name;
@@ -40,6 +45,11 @@ class DataWriterField {
 
 	public function __call($method, $args)
 	{
+		if (method_exists($this, 'set'.ucwords($method)))
+		{
+			return call_user_func_array(array($this, 'set'.ucwords($method)), $args);
+		}
+
 		$types = array(
 			'uint' 		=> DW::TYPE_UINT,
 			'string' 	=> DW::TYPE_STRING,
