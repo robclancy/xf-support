@@ -19,14 +19,16 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 		$this->_key = $writer::getKey();
 	}
 
-	public function getKey()
+	public static function getKey()
 	{
-		return $this->_key;
+		$writer = $this->_getWriterName();
+		return $writer::getKey();
 	}
 
-	public function getTable()
+	public static function getTable()
 	{
-		return $this->_table;
+		$writer = $this->_getWriterName();
+		return $writer::getTable();
 	}
 
 	abstract protected function _getWriterName();

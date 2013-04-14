@@ -31,17 +31,24 @@ abstract class AdminController extends \XenForo_ControllerAdmin_Abstract {
 
 		if ( ! is_null($this->_dataModelName))
 		{
-			$this->_dataModel = $this->getModelFromCache($this->_getDataModelName());
+			$dataModelName = static::_getDataModelName();
+			$this->_dataModel = $this->getModelFromCache($dataModelName);
 			$repoName = $this->_getRepositoryName();
 			$this->_repository = new $repoName($this->_dataModel);
 		
-			$this->_id = $this->_input->filterSingle($this->_dataModel->getKey(), self::UINT);
+			$this->_id = $this->_input->filterSingle($dataModelName::getKey(), self::UINT);
 		}
 
 		parent::_preDispatch($action);
 	}
 
-	abstract protected function _getDataModelName();
+	abstract protected static function _getDataModelName();
+
+	public function getKey()
+	{
+		$dataModel = static::_getDataModelName();
+		return $dataModel::getKey();
+	}
 
 	protected function _getRepositoryName()
 	{
