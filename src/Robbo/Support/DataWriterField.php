@@ -23,9 +23,14 @@ class DataWriterField {
 		return $this;
 	}
 
+	public function setIncrements()
+	{
+		return $this->uint()->autoIncrement();
+	}
+
 	public function setDefault($value)
 	{
-		return $this->_definition('default', $value);
+		return $this->_addDefinition('default', $value);
 	}
 
 	public function getName()
