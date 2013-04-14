@@ -23,31 +23,6 @@ class DataWriterField {
 		return $this;
 	}
 
-	public function string()
-	{
-		return $this->_addDefinition('type', DW::TYPE_STRING);
-	}
-
-	public function uinteger()
-	{
-		return $this->_addDefinition('type', DW::TYPE_UINT);
-	}
-
-	public function uint()
-	{
-		return $this->uinteger();
-	}
-
-	public function required()
-	{
-		return $this->_addDefinition('required', true);
-	}
-
-	public function default($value)
-	{
-		return $this->_addDefinition('default', $value);
-	}
-
 	public function getName()
 	{
 		return $this->_name;
@@ -61,5 +36,30 @@ class DataWriterField {
 	public function toArray()
 	{
 		return $this->_definition;
+	}
+
+	public function __call($method, $args)
+	{
+		$types = array(
+			'uint' 		=> DW::TYPE_UINT,
+			'string' 	=> DW::TYPE_STRING,
+		);
+
+		if (isset($types[$method]))
+		{
+			return $this->_addDefinition('type', $types[$method]);
+		}
+
+		$youCantHandleTheTruth = array(
+			'required', 'autoIncrement'
+		);
+
+		if (in_array($method, $youCantHandleTheTruth))
+		{
+			return $this->_addDefinition($method, true);
+		}
+
+		$className = get_class($this);
+		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
 	}
 }
