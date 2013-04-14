@@ -10,9 +10,9 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 	const UINT       = 'uint';
 	const FLOAT      = 'float';
 	const BINARY     = 'binary';
-	const ARRAY_SIMPLE = 'array_simple';
 	const JSON_ARRAY = 'json_array';
 	const DATE_TIME  = 'dateTime';
+	const ARRAY_SIMPLE = 'array_simple';
 
 	protected $_dataModel;
 
