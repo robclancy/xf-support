@@ -14,28 +14,28 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	protected function _setTableAndKey()
 	{
-		$writer = $this->_getWriterName();
+		$writer = $static::_getWriterName();
 		$this->_table = $writer::getTable();
 		$this->_key = $writer::getKey();
 	}
 
 	public static function getKey()
 	{
-		$writer = $this->_getWriterName();
+		$writer = static::_getWriterName();
 		return $writer::getKey();
 	}
 
 	public static function getTable()
 	{
-		$writer = $this->_getWriterName();
+		$writer = static::_getWriterName();
 		return $writer::getTable();
 	}
 
-	abstract protected function _getWriterName();
+	abstract protected static function _getWriterName();
 
 	public function getNewWriter()
 	{
-		return  \XenForo_DataWriter::create($this->_getWriterName());
+		return  \XenForo_DataWriter::create(static::_getWriterName());
 	}
 
 	public function getResourceById($id, array $fetchOptions = array())
