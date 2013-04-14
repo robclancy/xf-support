@@ -17,14 +17,24 @@ abstract class Installer {
 
 	protected $_db;
 
+	public function __construct($existingData, array $data = null)
+	{
+		$this->_existingData = $existingData;
+		$this->_data = $data;
+
+		$this->_setUp();
+	}
+
 	public static function install($existingData, array $data)
 	{
-		return (new static)->up($existingData, $data);
+		$instance = new static($existingData, $data);
+		return $instance->up();
 	}
 
 	public static function uninstall(array $existingData)
 	{
-		return (new static)->down($existingData);
+		$instance = new static($existingData);
+		return $instance->down();
 	}
 
 	protected function _setUp()
@@ -46,17 +56,12 @@ abstract class Installer {
 		$this->_db = \XenForo_Application::getDb();
 	}
 
-	public function up($existingData, array $data)
+	public function up()
 	{
-		$this->_existingData = $existingData;
-		$this->_data = $data;
-
-		$this->_setUp();
-
 		try 
 		{
-			$existingVersion = $existingData ? $existingData['version_id'] : 0;
-			$this->_runMethods('up', range($existingVersion+1, $data['version_id']));
+			$existingVersion = $this->_existingData ? $this->_existingData['version_id'] : 0;
+			$this->_runMethods('up', range($existingVersion+1, $this->_data['version_id']));
 		}
 		catch (Exception $e)
 		{
@@ -69,10 +74,6 @@ abstract class Installer {
 
 	public function down(array $existingData)
 	{
-		$this->_existingData = $existingData;
-
-		$this->_setUp();
-
 		$this->_runMethods('down', range($from, 0));
 	}
 
