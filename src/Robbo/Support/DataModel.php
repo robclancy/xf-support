@@ -14,31 +14,31 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	protected function _setTableAndKey()
 	{
-		$writer = static::_getWriterName();
+		$writer = static::getWriterName();
 		$this->_table = $writer::getTable();
 		$this->_key = $writer::getKey();
 	}
 
 	public static function getKey()
 	{
-		$writer = static::_getWriterName();
+		$writer = static::getWriterName();
 		return $writer::getKey();
 	}
 
 	public static function getTable()
 	{
-		$writer = static::_getWriterName();
+		$writer = static::getWriterName();
 		return $writer::getTable();
 	}
 
-	protected static function _getWriterName() 
+	public static function getWriterName() 
 	{
 		throw new \XenForo_Exception(__METHOD__.' must be overwritten');
 	}
 
 	public function getNewWriter()
 	{
-		return  \XenForo_DataWriter::create(static::_getWriterName());
+		return  \XenForo_DataWriter::create(static::getWriterName());
 	}
 
 	public function getResourceById($id, array $fetchOptions = array())
