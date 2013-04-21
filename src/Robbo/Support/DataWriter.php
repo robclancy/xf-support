@@ -45,7 +45,7 @@ abstract class DataWriter extends \XenForo_DataWriter {
 
 	protected function _getDataModel()
 	{
-		return $this->getModelFromCache($this->_getDataModelName())
+		return $this->getModelFromCache($this->_getDataModelName());
 	}
 
 	protected function _getExistingData($data)
