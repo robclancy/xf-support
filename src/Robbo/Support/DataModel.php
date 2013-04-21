@@ -14,7 +14,7 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 
 	protected function _setTableAndKey()
 	{
-		$writer = $static::_getWriterName();
+		$writer = static::_getWriterName();
 		$this->_table = $writer::getTable();
 		$this->_key = $writer::getKey();
 	}
