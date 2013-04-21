@@ -43,6 +43,11 @@ abstract class DataWriter extends \XenForo_DataWriter {
 
 	abstract protected function _getDataModelName();
 
+	protected function _getDataModel()
+	{
+		return $this->getModelFromCache($this->_getDataModelName())
+	}
+
 	protected function _getExistingData($data)
     {
     	if ( ! $id = $this->_getExistingPrimaryKey($data, static::$_key))
@@ -50,7 +55,7 @@ abstract class DataWriter extends \XenForo_DataWriter {
     		return false;
     	}
 
-    	return array(static::$_table => $this->getModelFromCache($this->_getDataModelName())->getById($id));
+    	return array(static::$_table => $this->_getDataModel()->getById($id));
     }
 
     protected function _getUpdateCondition($tableName)
