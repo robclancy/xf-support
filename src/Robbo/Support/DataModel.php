@@ -31,7 +31,10 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 		return $writer::getTable();
 	}
 
-	abstract protected static function _getWriterName();
+	protected static function _getWriterName() 
+	{
+		throw new \XenForo_Exception(__METHOD__.' must be overwritten');
+	}
 
 	public function getNewWriter()
 	{
