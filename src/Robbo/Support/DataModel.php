@@ -88,6 +88,11 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 		', $this->_key);
 	}
 
+	public function save($id, array $data)
+	{
+		return $id ? $this->update($id, $data) : $this->insert($data);
+	}
+
 	public function insert(array $data)
 	{
 		$dw = $this->getNewWriter();
