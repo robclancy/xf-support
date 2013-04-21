@@ -31,12 +31,12 @@ class Repository implements RepositoryInterface {
 
 	public function insert(array $data, array $extra = array())
 	{
-		return $this->model->insert($data);
+		return $this->model->insert($data, $extra);
 	}
 
 	public function update($id, array $data, array $extra = array())
 	{
-		return $this->model->update($id, $data);
+		return $this->model->update($id, $data, $extra);
 	}
 
 	public function delete($id)
