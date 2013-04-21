@@ -29,9 +29,8 @@ abstract class AdminController extends \XenForo_ControllerAdmin_Abstract {
 			$this->assertAdminPermission($this->_adminPermission);
 		}
 
-		if ( ! is_null($this->_dataModelName))
+		if ($dataModelName = static::_getDataModelName())
 		{
-			$dataModelName = static::_getDataModelName();
 			$this->_dataModel = $this->getModelFromCache($dataModelName);
 			$repoName = $this->_getRepositoryName();
 			$this->_repository = new $repoName($this->_dataModel);

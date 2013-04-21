@@ -22,7 +22,7 @@ abstract class PublicController extends \XenForo_ControllerPublic_Abstract {
 
 	protected function _preDispatch($action)
 	{
-		if ( ! is_null($this->_dataModelName))
+		if ($dataModelName = static::_getDataModelName())
 		{
 			$dataModelName = static::_getDataModelName();
 			$this->_dataModel = $this->getModelFromCache($dataModelName);
