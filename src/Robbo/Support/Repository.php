@@ -24,12 +24,17 @@ class Repository implements RepositoryInterface {
 		return $this->model->getResources($conditions, $fetchOptions);
 	}
 
-	public function insert(array $data)
+	public function save($id, array $data, array $extra = array())
+	{
+		return $id ? $this->update($id, $data, $extra) : $this->insert($data, $extra);
+	}
+
+	public function insert(array $data, array $extra = array())
 	{
 		return $this->model->insert($data);
 	}
 
-	public function update($id, array $data)
+	public function update($id, array $data, array $extra = array())
 	{
 		return $this->model->update($id, $data);
 	}
