@@ -88,27 +88,39 @@ abstract class DataModel extends \XenForo_Model implements DataModelInterface {
 		', $this->_key);
 	}
 
-	public function save($id, array $data)
+	public function save($id, array $data, array $extra = array())
 	{
-		return $id ? $this->update($id, $data) : $this->insert($data);
+		return $id ? $this->update($id, $data, $extra) : $this->insert($data, $extra);
 	}
 
-	public function insert(array $data)
+	public function insert(array $data, array $extra = array())
 	{
 		$dw = $this->getNewWriter();
 
 		$dw->bulkSet($data);
+
+		foreach ($extra as $const => $val)
+		{
+			$dw->setExtraData($const, $val);
+		}
+
 		$dw->save();
 
 		return $dw->getMergedData();
 	}
 
-	public function update($id, array $data)
+	public function update($id, array $data, array $extra = array())
 	{
 		$dw = $this->getNewWriter();
 
 		$dw->setExistingData($id);
 		$dw->bulkSet($data);
+
+		foreach ($extra as $const => $val)
+		{
+			$dw->setExtraData($const, $val);
+		}
+		
 		$dw->save();
 
 		return $dw->getMergedData();
