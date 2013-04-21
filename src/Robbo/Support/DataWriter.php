@@ -55,7 +55,7 @@ abstract class DataWriter extends \XenForo_DataWriter {
     		return false;
     	}
 
-    	return array(static::$_table => $this->_getDataModel()->getById($id));
+    	return array(static::$_table => $this->_getDataModel()->getResourceById($id));
     }
 
     protected function _getUpdateCondition($tableName)
