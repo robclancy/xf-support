@@ -72,7 +72,7 @@ abstract class Installer {
 		}
 	}
 
-	public function down(array $existingData)
+	public function down()
 	{
 		$this->_runMethods('down', range($from, 0));
 	}
