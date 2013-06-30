@@ -33,6 +33,13 @@ class DataWriterField {
 		return $this->_addDefinition('default', $value);
 	}
 
+	public function setAllowedValues($values)
+	{
+		$values = is_array($values) ? $values : func_get_args();
+
+		return $this->_addDefinition('allowedValues', $values);
+	}
+
 	public function getName()
 	{
 		return $this->_name;
@@ -57,7 +64,9 @@ class DataWriterField {
 
 		$types = array(
 			'uint' 		=> DW::TYPE_UINT,
+			'uintForced' => DW::TYPE_UINT_FORCED,
 			'string' 	=> DW::TYPE_STRING,
+			'serialized' => DW::TYPE_SERIALIZED,
 		);
 
 		if (isset($types[$method]))
