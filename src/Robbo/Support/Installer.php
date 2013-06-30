@@ -74,7 +74,7 @@ abstract class Installer {
 
 	public function down()
 	{
-		$this->_runMethods('down', range($from, 0));
+		$this->_runMethods('down', range($this->_existingData['version_id'], 0));
 	}
 
 	protected function _runMethods($method, $versions)
